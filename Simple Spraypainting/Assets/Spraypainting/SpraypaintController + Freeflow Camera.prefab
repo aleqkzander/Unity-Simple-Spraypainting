@@ -46,10 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FreeflowCamera: {fileID: 7200220060752680689}
-  SpraypaintingTexture: {fileID: 8400000, guid: 6501052390c2e24469f16c37c61459c5,
-    type: 2}
-  brushColor: {r: 1, g: 1, b: 1, a: 1}
-  brushSize: 10
+  SpraypaintTexture: {fileID: 8400000, guid: 6501052390c2e24469f16c37c61459c5, type: 2}
+  brushColor: {r: 1, g: 0.3254717, b: 0.3254717, a: 1}
+  brushSize: 1
 --- !u!1 &7882506056032480216
 GameObject:
   m_ObjectHideFlags: 0

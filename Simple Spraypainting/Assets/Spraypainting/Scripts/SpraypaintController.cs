@@ -1,18 +1,19 @@
+using System.IO;
 using UnityEngine;
 
 public class SpraypaintController : MonoBehaviour
 {
     public Camera FreeflowCamera;
-    public RenderTexture SpraypaintingTexture;
+    public RenderTexture SpraypaintTexture;
     public Color brushColor = Color.white;
-    public int brushSize = 10;
+    public int brushSize = 1;
 
     private Texture2D drawingTexture;
 
     void Start()
     {
         // Initialize the drawing texture
-        drawingTexture = new Texture2D(SpraypaintingTexture.width, SpraypaintingTexture.height, TextureFormat.RGBA32, false);
+        drawingTexture = new Texture2D(SpraypaintTexture.width, SpraypaintTexture.height, TextureFormat.RGBA32, false);
 
         // Clear the render texture
         ClearRenderTexture();
@@ -24,11 +25,16 @@ public class SpraypaintController : MonoBehaviour
         {
             DrawOnTexture();
         }
+
+        //if (Input.GetKeyDown(KeyCode.S))
+        //{
+        //    SaveDrawing();
+        //}
     }
 
     void ClearRenderTexture()
     {
-        RenderTexture.active = SpraypaintingTexture;
+        RenderTexture.active = SpraypaintTexture;
         GL.Clear(true, true, Color.clear);
         RenderTexture.active = null;
     }
@@ -38,7 +44,7 @@ public class SpraypaintController : MonoBehaviour
         Vector3 mousePos = Input.mousePosition;
 
         // Convert mouse position to texture coordinates
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        Ray ray = FreeflowCamera.ScreenPointToRay(mousePos);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
@@ -52,22 +58,32 @@ public class SpraypaintController : MonoBehaviour
                 {
                     Vector2 uv = hit.textureCoord;
 
-                    int x = (int)(uv.x * SpraypaintingTexture.width);
-                    int y = (int)(uv.y * SpraypaintingTexture.height);
+                    int x = (int)(uv.x * SpraypaintTexture.width);
+                    int y = (int)(uv.y * SpraypaintTexture.height);
+
+                    //Debug.Log($"Mouse Position: {mousePos}, UV: {uv}, Texture Coordinates: ({x}, {y})");
 
                     // Draw a brush at the mouse position
                     DrawBrush(x, y);
 
                     // Copy the drawing texture to the render texture
-                    RenderTexture.active = SpraypaintingTexture;
-                    Graphics.Blit(drawingTexture, SpraypaintingTexture);
+                    RenderTexture.active = SpraypaintTexture;
+                    Graphics.Blit(drawingTexture, SpraypaintTexture);
                     RenderTexture.active = null;
+                }
+                else
+                {
+                    Debug.LogWarning("Renderer or MeshCollider missing, or material does not have a main texture.");
                 }
             }
             else
             {
-                Debug.LogAssertion($"Please assign the Paintable-Script to {hit.collider.gameObject.name} to make it paintable");
+                Debug.LogWarning("Object is not paintable.");
             }
+        }
+        else
+        {
+            Debug.LogWarning("Raycast did not hit any object.");
         }
     }
 
@@ -86,5 +102,20 @@ public class SpraypaintController : MonoBehaviour
             }
         }
         drawingTexture.Apply();
+    }
+
+    public void SaveDrawing()
+    {
+        RenderTexture.active = SpraypaintTexture;
+        Texture2D savedTexture = new(SpraypaintTexture.width, SpraypaintTexture.height, TextureFormat.RGBA32, false);
+        savedTexture.ReadPixels(new Rect(0, 0, SpraypaintTexture.width, SpraypaintTexture.height), 0, 0);
+        savedTexture.Apply();
+        RenderTexture.active = null;
+
+        byte[] bytes = savedTexture.EncodeToPNG();
+        string path = Path.Combine(Application.persistentDataPath, "Drawing.png");
+        File.WriteAllBytes(path, bytes);
+
+        Debug.Log($"Saved drawing to {path}");
     }
 }
