@@ -1,3 +1,4 @@
+using System.Collections;
 using System.IO;
 using UnityEngine;
 
@@ -48,8 +49,8 @@ public class SpraypaintController : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            // Check if the object has the Paintable script attached
-            if (hit.collider.gameObject.GetComponent<Paintable>() != null)
+            // Check if the object has the Paintable tag
+            if (hit.collider.gameObject.CompareTag("Paintable"))
             {
                 Renderer renderer = hit.collider.GetComponent<Renderer>();
                 MeshCollider meshCollider = hit.collider as MeshCollider;
@@ -64,7 +65,7 @@ public class SpraypaintController : MonoBehaviour
                     //Debug.Log($"Mouse Position: {mousePos}, UV: {uv}, Texture Coordinates: ({x}, {y})");
 
                     // Draw a brush at the mouse position
-                    DrawBrush(x, y);
+                    StartCoroutine(DrawBrush(x, y));
 
                     // Copy the drawing texture to the render texture
                     RenderTexture.active = SpraypaintTexture;
@@ -87,7 +88,7 @@ public class SpraypaintController : MonoBehaviour
         }
     }
 
-    void DrawBrush(int x, int y)
+    IEnumerator DrawBrush(int x, int y)
     {
         for (int i = -brushSize; i <= brushSize; i++)
         {
@@ -98,9 +99,11 @@ public class SpraypaintController : MonoBehaviour
                     int pixelX = Mathf.Clamp(x + i, 0, drawingTexture.width - 1);
                     int pixelY = Mathf.Clamp(y + j, 0, drawingTexture.height - 1);
                     drawingTexture.SetPixel(pixelX, pixelY, brushColor);
+                    yield return null;
                 }
             }
         }
+
         drawingTexture.Apply();
     }
 
