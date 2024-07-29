@@ -45,3 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SpraypaintMaterial: {fileID: 2100000, guid: a79a9640fb8752049a7e520f4ed5b448, type: 2}
+  MeshRenderElementSlot: 0
