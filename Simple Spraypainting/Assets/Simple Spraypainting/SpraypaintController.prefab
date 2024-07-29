@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5894271729753076003}
   - component: {fileID: 9137352970228932933}
   m_Layer: 0
-  m_Name: SpraypaintController + Freeflow Camera
+  m_Name: SpraypaintController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
