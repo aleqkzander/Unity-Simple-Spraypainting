@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class SpraypaintController : MonoBehaviour
 {
-    public Camera FreeflowCamera;
+    public Camera Camera;
     public RenderTexture SpraypaintTexture;
-    public Color brushColor = Color.white;
+    public Color brushColor = Color.red;
     public int brushSize = 1;
 
     private Texture2D drawingTexture;
@@ -26,11 +26,6 @@ public class SpraypaintController : MonoBehaviour
         {
             DrawOnTexture();
         }
-
-        //if (Input.GetKeyDown(KeyCode.S))
-        //{
-        //    SaveDrawing();
-        //}
     }
 
     void ClearRenderTexture()
@@ -45,7 +40,7 @@ public class SpraypaintController : MonoBehaviour
         Vector3 mousePos = Input.mousePosition;
 
         // Convert mouse position to texture coordinates
-        Ray ray = FreeflowCamera.ScreenPointToRay(mousePos);
+        Ray ray = Camera.ScreenPointToRay(mousePos);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
